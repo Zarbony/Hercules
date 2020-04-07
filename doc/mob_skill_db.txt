@@ -37,25 +37,31 @@ mob_skill_db:(
 **************************************************************************/
 <Monster_Constant>: Monster identifier, found in mob_db.conf as SpriteName.
 
+//===============================================================================================================================\\
 <Skill_Constant>: skill name found in skill_db.conf 
 		  for Example: <AL_HEAL>, <ASC_EDP>, ...
 
+//===============================================================================================================================\\
 ClearSkills: if true, all previously defined skills for the same mob will be cleared.
-	
+
+//===============================================================================================================================\\	
 SkillLevel: Skill Level.
 	    When not specified, becomes 1.
 
+//===============================================================================================================================\\
 SkillState: The states when the mob uses the skill
-	"MSS_ANYTARGET" // Mob Attackes any target, like random player.
-	"MSS_BERSERK" //aggressive mob attacking
+	"MSS_ANY" //Mobs skill state in any state except MSS_DEAD
+	"MSS_ANYTARGET" // Same as "MSS_ANY" but mob must have a target
+	"MSS_BERSERK" //aggressive mob attacking (Mob started battle)
 	"MSS_RUSH" //While Following an player after being attacked
-	"MSS_LOOT" //While Looting
+	"MSS_LOOT" //Mob is looting / Moving to loot
 	"MSS_ANGRY" //Attack Player even if Player hasen't attacked mob yet
-	"MSS_IDLE" //In Idle State
-	"MSS_WALK" //While Movement
+	"MSS_IDLE" //Mob isn't moving and has no target
+	"MSS_WALK" //Mob is Walking
 	"MSS_DEAD" //While Dying
-	"MSS_FOLLOW" //Mob Following a player without being attacked
+	"MSS_FOLLOW" //Mob is following player without being attacked
 
+//===============================================================================================================================\\
 SkillTarget: The Target who the mob will target with the skill
 	"MST_SLAVELE" //Slave
 	"MST_SELF" //On Himself
@@ -63,60 +69,109 @@ SkillTarget: The Target who the mob will target with the skill
 	"MST_RANDOM" //RANDOM TARGET!
 	"MST_FRIEND" //On friend (Near Monster or so on like the Geographer Heal)
 	"MST_MASTER" //Only for Slaves which target the Master for Example with AL_HEAL to heal him.
-	"MST_AROUND5"
-	"MST_AROUND6"
-	"MST_AROUND7"
-	"MST_AROUND8"
-	"MST_AROUND1"
-	"MST_AROUND2"
-	"MST_AROUND3"
-	"MST_AROUND4"
-	"MST_AROUND" //= MST_AROUND4,
+	"MST_AROUND1" //Range = 10
+	"MST_AROUND2" //Range = 11
+	"MST_AROUND3" //Range = 12
+	"MST_AROUND4" //Range = 13
+	"MST_AROUND5" //Range = 6
+	"MST_AROUND6" //Range = 7
+	"MST_AROUND7" //Range = 8
+	"MST_AROUND8" //Range = 9
+	"MST_AROUND" //Range = 13
 
-
+//===============================================================================================================================\\
 Rate: Monster Rate for Casting the Skill, 1 = 0.01%. 10= 0,1%, 100% = 1% ...
 
+//===============================================================================================================================\\
 CastTime: time in ms how long the mob need to cast the skill 1000ms = 1sec
 
+//===============================================================================================================================\\
 Delay: How much time will be between the use and the next use for the skill in ms 1000ms = 1 sec.
 
+//===============================================================================================================================\\
 Cancelable: if it's possible for the player to cancel the skill while the mob is casting
 	    If set to true the skill can be interrupted at casting state
+//===============================================================================================================================\\
 
 CastCondition: Which Condition is needed to cast the skill
 	"MSC_MYHPLTMAXRATE" //When number of HP in Rate is less than or equal to the original specified number.
-	"MSC_MYHPINRATE" //HP Between two rates where the skills is casted, ConditionData has be the lower value and val0 the higher value
-	"MSC_SPAWN" //When mob spawns/respawns (no condition value).
-	"MSC_ALWAYS" //Always
-	"MSC_RUDEATTACKED" //When mob is rude attacked (no condition value).
-	"MSC_SKILLUSED" //if an player uses an skill, ConditionData can set for a specific skill like MG_SIGHT
-	"MSC_AFTERSKILL" //After using a skill
-	"MSC_ATTACKPCGE" //When attack PCs become greater than or equal to the specified number.
-	"MSC_ATTACKPCGT
-	"MSC_FRIENDHPLTMAXRATE" //When mob's friend's HP drops to the specified %.
-	"MSC_FRIENDHPINRATE"//When mob's friend's HP drops between two HP Rates in %
-	"MSC_MYSTATUSON" //If mob has the specified abnormality in status.(Example: ConditionData "SC_HIDING")
-	"MSC_MYSTATUSOFF" //If mob specified abnormality in status has ended .(Example: ConditionData "SC_HIDING")
-	"MSC_SLAVELE" //When number of slaves is less than or equal to the original specified number.
-	"MSC_SLAVELT" //When number of slaves is between two numbers.
-	"MSC_LONGRANGEATTACKED" //When long range attacked, ex. bows, guns, ranged skills (no condition value).
-	"MSC_CLOSEDATTACKED" //When Melee Attacked
-	"MSC_FRIENDSTATUSON" //If friend has the specified abnormality in status.
-	"MSC_FRIENDSTATUSOFF" //If friends abnormality in status has ended
-	"MSC_CASTTARGETED //When a target is in cast range (no condition value).
-	"MSC_MASTERHPLTMAXRATE" //When number of Master's HP in Rate is less than or equal to the original specified number.
-	"MSC_MASTERATTACKED" //if the master is attacked
-	"MSC_ALCHEMIST" //If summoned by Alchemist like Marine Sphere
+		-> ConditionData: X
 
-ConditionData:
+	"MSC_MYHPINRATE" // Mob HP is greater than or equal to X% and less than or equal to Y%
+		-> ConditionData: X
+		-> val0: Y
+
+	"MSC_SPAWN" //When mob spawns/respawns (no condition value).
+
+	"MSC_ALWAYS" //Always (no condition value)
+
+	"MSC_RUDEATTACKED" //When mob is rude attacked (no condition value).
+
+	"MSC_SKILLUSED" //if an player uses an skill X, ConditionData can set for a specific skill like "MG_SIGHT"
+		-> ConditionData: X
+
+	"MSC_AFTERSKILL" //After using skill X
+		-> ConditionData: X
+		--> If X is 0 the Mob Skill will Trigger at every Skill
+
+	"MSC_ATTACKPCGE" //Mob is attacked by X or more Units (Chars/ Pets/ Merc/ Homu...)
+		-> ConditionData: X
+
+	"MSC_ATTACKPCGT
+
+	"MSC_FRIENDHPLTMAXRATE" //When mob's friend's HP drops to the specified %.
+		-> ConditionData: X
+
+	"MSC_FRIENDHPINRATE"//When mob's friend's HP drops between two HP Rates in %
+		-> ConditionData: X
+		-> val0: Y
+
+	"MSC_MYSTATUSON" //If mob has the specified abnormality in status.(Example: ConditionData "SC_HIDING")
+		-> ConditionData: X
+
+	"MSC_MYSTATUSOFF" //If mob specified abnormality in status has ended .(Example: ConditionData "SC_HIDING")
+		-> ConditionData: X
+
+	"MSC_SLAVELE" //When number of slaves is X or less to the original specified number.
+		-> ConditionData: X
+
+	"MSC_SLAVELT" //When number of slaves is between two numbers.
+
+	"MSC_LONGRANGEATTACKED" //When long range attacked, ex. bows, guns, ranged skills (no condition value).
+
+	"MSC_CLOSEDATTACKED" //When Melee Attacked (no condition value)
+
+	"MSC_FRIENDSTATUSON" //If friend has the specified abnormality in status.
+		-> ConditionData: X
+
+	"MSC_FRIENDSTATUSOFF" //If friends abnormality in status has ended
+		-> ConditionData: X
+
+	"MSC_CASTTARGETED //When a target is in cast range (no condition value).
+
+	"MSC_MASTERHPLTMAXRATE" //When number of Master's HP in Rate is less than or equal to the original specified number.
+		-> ConditionData: X
+
+	"MSC_MASTERATTACKED" //if the master is attacked (no condition value)
+
+	"MSC_ALCHEMIST" //If summoned by Alchemist like Marine Sphere (no condition value)
+//===============================================================================================================================\\
+
+ConditionData: // Additional parameters used by the CastCondition, where applicable
 	"MSC_ANY" //In Any Condition
-	If CastCondtion is "MSC_MYHPINRATE" than set here the Lower Value when the Monster should stop the skill for example 20
-	And at val0: the Higher value when the monster should started the skill for example 80
+
+	If CastCondtion is "MSC_MYHPINRATE" than set here the X Value when the Monster should stop the skill for example 20
+	And at val0: the Y value when the monster should started the skill for example 80
 	Then the Monster will Cast its Skill in HP Range 80% - 20%.
 
 val0:
-	"MSC_ALWAYS" //Skill will Trigger Always
-	Here you can set the Higher Value for "MSC_MYHPINRATE"
+	Here you can set the Y Value for "MSC_MYHPINRATE"
+	Some Skills use this too:
+		NPC_SUMMONMONSTER -> Slave Mob ID
+		NPC_SUMMONSLAVE -> Slave Mob ID
+		NPC_METAMORPHOSIS -> Transform Mob ID
+		NPC_EMOTION -> Emotion ID
+		NPC_EMOTION_ON -> Emotion ID
 val1:
 val2:
 val3:
@@ -125,7 +180,7 @@ val4:
 	but in different times, in case of the myhpltmaxrate when the hp is being decreased, you can set them in a decreasing order, like:
 	80,60,40,20,10
 
-
+//===============================================================================================================================\\
 Emotion:
 	Constant ID which Emotion the Monster will use
 	e_gasp 0
@@ -140,8 +195,10 @@ Emotion:
 	}
 }
 )
+//===============================================================================================================================\\
 
 Example Setting:
+	In this Setting, the Mob will Use Skill "AL_HEAL" on level 5 on Himself but only when the Mob is in "SC_HIDING", this skill can be canceled.
 		AL_HEAL: {
 			SkillState: "MSS_IDLE"
 			SkillLevel: 5
@@ -151,16 +208,5 @@ Example Setting:
 			SkillTarget: "MST_SELF"
 			CastCondition: "MSC_MYSTATUSON"
 			ConditionData: "SC_HIDING" //If the Mob is in Hiding SC_Hiding, the Monster will Heal itself in IDLE state.
-		}
-Skill Scheme
-		SK_ILL: {
-			SkillState: "MSS_"
-			SkillLevel: 
-			Rate: 
-			CastTime: 
-			Delay: 
-			Cancelable: false
-			SkillTarget: "MST_"
-			CastCondition: "MSC_"
 		}
 
