@@ -3,7 +3,7 @@
 //===== By: ==================================================
 //= Zarbony
 //===== Current Version: =====================================
-//= 20190530
+//= 20200405
 //===== Description: =========================================
 //= Explanation of the mob_skill_db.conf file and structure.
 //============================================================
@@ -35,14 +35,12 @@ mob_skill_db:(
 		}
 	}
 **************************************************************************/
-<Monster_Constant>: Monster Name displaying as output for @ and script commands.
-		    This is the name shown when summon a monster with "--en--" as monster name.
-		    For Example: <TIMEHOLDER>
+<Monster_Constant>: Monster identifier, found in mob_db.conf as SpriteName.
 
 <Skill_Constant>: skill name found in skill_db.conf 
 		  for Example: <AL_HEAL>, <ASC_EDP>, ...
 
-ClearSkills: if true, all skills before this skill will cleared.
+ClearSkills: if true, all previously defined skills for the same mob will be cleared.
 	
 SkillLevel: Skill Level.
 	    When not specified, becomes 1.
@@ -56,7 +54,7 @@ SkillState: The states when the mob uses the skill
 	"MSS_IDLE" //In Idle State
 	"MSS_WALK" //While Movement
 	"MSS_DEAD" //While Dying
-	"MSS_FOLLOW //Mob Following a player without being attacked
+	"MSS_FOLLOW" //Mob Following a player without being attacked
 
 SkillTarget: The Target who the mob will target with the skill
 	"MST_SLAVELE" //Slave
@@ -83,7 +81,7 @@ CastTime: time in ms how long the mob need to cast the skill 1000ms = 1sec
 Delay: How much time will be between the use and the next use for the skill in ms 1000ms = 1 sec.
 
 Cancelable: if it's possible for the player to cancel the skill while the mob is casting
-	    If set to "True" the skill can be interrupted at casting state
+	    If set to true the skill can be interrupted at casting state
 
 CastCondition: Which Condition is needed to cast the skill
 	"MSC_MYHPLTMAXRATE" //When number of HP in Rate is less than or equal to the original specified number.
@@ -92,7 +90,7 @@ CastCondition: Which Condition is needed to cast the skill
 	"MSC_ALWAYS" //Always
 	"MSC_RUDEATTACKED" //When mob is rude attacked (no condition value).
 	"MSC_SKILLUSED" //if an player uses an skill, ConditionData can set for a specific skill like MG_SIGHT
-	"MSC_AFTERSKILL" //Nach benutzung eines Skills
+	"MSC_AFTERSKILL" //After using a skill
 	"MSC_ATTACKPCGE" //When attack PCs become greater than or equal to the specified number.
 	"MSC_ATTACKPCGT
 	"MSC_FRIENDHPLTMAXRATE" //When mob's friend's HP drops to the specified %.
